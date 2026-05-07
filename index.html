@@ -2,10 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KEL-8 IoT Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>KEL-8 IoT Dashboard — SMKN 2 Klaten</title>
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-  <!-- Chart.js untuk grafik -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -31,7 +30,7 @@
         <input type="text"   id="cfg-host"     placeholder="contoh.s1.eu.hivemq.cloud" autocomplete="off" spellcheck="false">
         <input type="number" id="cfg-port"     placeholder="8884" min="1" max="65535">
       </div>
-      <div class="form-hint">Port WSS default HiveMQ Cloud: 8884 &nbsp;|&nbsp; Port MQTTS (Arduino): 8883</div>
+      <div class="form-hint">Port WSS HiveMQ Cloud: 8884 &nbsp;|&nbsp; Port MQTTS Arduino: 8883</div>
     </div>
 
     <div class="form-group">
@@ -47,7 +46,7 @@
     <div class="form-group">
       <label>BASE TOPIC</label>
       <input type="text"     id="cfg-base"     placeholder="smkn2klaten/kel-8/esp32" autocomplete="off" spellcheck="false">
-      <div class="form-hint">Semua sub-topic akan menggunakan prefix ini otomatis.</div>
+      <div class="form-hint">Semua sub-topic menggunakan prefix ini otomatis.</div>
     </div>
 
     <div class="modal-status" id="modal-status">
@@ -91,7 +90,7 @@
                    l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09
                    a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
-        KONFIGURASI
+        <span class="btn-config-label">KONFIGURASI</span>
       </button>
       <div class="header-time">
         <span id="clock">--:--:--</span>
@@ -100,7 +99,7 @@
     </div>
   </header>
 
-  <!-- ── ① STATUS MQTT & MODE ── -->
+  <!-- ── ① STATUS SISTEM ── -->
   <div class="section-title">STATUS SISTEM</div>
   <div class="status-bar">
     <div class="status-card offline" id="card-mqtt">
@@ -144,7 +143,7 @@
   <div class="section-title">DATA SENSOR REALTIME</div>
   <div class="sensor-grid">
 
-    <!-- Suhu — class warna dikendalikan JS -->
+    <!-- Suhu -->
     <div class="sensor-card" id="card-suhu">
       <div class="geo-corner"></div>
       <div class="sensor-icon">
@@ -156,7 +155,6 @@
       <div class="sensor-label">SUHU</div>
       <div class="sensor-value" id="val-suhu">--.-</div>
       <div class="sensor-unit">DERAJAT CELSIUS</div>
-      <!-- Badge status suhu -->
       <div class="suhu-badge" id="suhu-badge">—</div>
       <div class="sensor-update" id="upd-suhu">—</div>
     </div>
@@ -176,7 +174,7 @@
       <div class="sensor-update" id="upd-hum">—</div>
     </div>
 
-    <!-- LDR / Cahaya -->
+    <!-- LDR -->
     <div class="sensor-card">
       <div class="geo-corner"></div>
       <div class="sensor-icon">
@@ -238,13 +236,13 @@
     </div>
   </div>
 
-  <!-- ── ⑤ GRAFIK SUHU & KELEMBABAN ── -->
+  <!-- ── ⑤ GRAFIK REALTIME ── -->
   <div class="section-title">GRAFIK REALTIME</div>
   <div class="chart-panel">
     <div class="chart-header">
       <div class="chart-meta">
         <span class="chart-title-text">SUHU &amp; KELEMBABAN</span>
-        <span class="chart-subtitle-text">10 data terakhir &middot; interval ±10 detik</span>
+        <span class="chart-subtitle-text">10 data terakhir &middot; interval &plusmn;10 detik</span>
       </div>
       <div class="chart-legend">
         <span class="legend-item"><span class="legend-dot" style="background:#ff4d00"></span>SUHU (°C)</span>
@@ -264,7 +262,8 @@
       <button class="btn-clear-history" onclick="clearHistory()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
-          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14H6L5 6"/>
           <path d="M10 11v6"/><path d="M14 11v6"/>
           <path d="M9 6V4h6v2"/>
         </svg>
@@ -292,15 +291,56 @@
     </div>
   </div>
 
-  <!-- ── FOOTER ── -->
+  <!-- ══════════════════════════════════════════════════════════
+       FOOTER IDENTITAS
+       ══════════════════════════════════════════════════════════ -->
   <footer>
-    <p>
-      <span class="pulse-dot"></span>
-      LIVE &mdash; <span id="footer-broker">broker.hivemq.com</span>
-      &nbsp;&middot;&nbsp;
-      <span id="footer-base">smkn2klaten/kel-8/esp32</span>
-    </p>
-    <p id="msg-count">MSG RECEIVED: 0</p>
+
+    <!-- Baris atas: live status -->
+    <div class="footer-top">
+      <div class="footer-live">
+        <span class="pulse-dot"></span>
+        <span>LIVE &mdash;</span>
+        <span id="footer-broker">broker.hivemq.com</span>
+        <span class="footer-sep">&middot;</span>
+        <span id="footer-base">smkn2klaten/kel-8/esp32</span>
+      </div>
+      <div class="footer-msg" id="msg-count">MSG RECEIVED: 0</div>
+    </div>
+
+    <!-- Divider -->
+    <div class="footer-divider"></div>
+
+    <!-- Baris bawah: identitas project -->
+    <div class="footer-identity">
+
+      <!-- Kiri: nama project & sekolah -->
+      <div class="footer-project">
+        <div class="footer-project-name">
+          <span class="footer-hex">&#11042;</span>
+          Aplikasi IoT Smart Monitoring System
+        </div>
+        <div class="footer-school">
+          SMKN 2 Klaten &mdash; Sistem Informasi Jaringan &amp; Aplikasi
+        </div>
+      </div>
+
+      <!-- Tengah: anggota kelompok -->
+      <div class="footer-team">
+        <div class="footer-team-label">KELOMPOK 8</div>
+        <div class="footer-members">
+          <span class="footer-member">Khairil</span>
+        </div>
+      </div>
+
+      <!-- Kanan: tahun & versi -->
+      <div class="footer-meta">
+        <div class="footer-year">2026 &ndash; 2027</div>
+        <div class="footer-version">v2.0 &middot; ESP32 + HiveMQ MQTT</div>
+      </div>
+
+    </div>
+
   </footer>
 
 </div><!-- /.wrapper -->
@@ -308,9 +348,9 @@
 <!-- TOAST NOTIFIKASI -->
 <div class="toast" id="toast"></div>
 
-<!-- Notifikasi suhu panas (overlay alert) -->
+<!-- Heat Alert (overlay suhu panas) -->
 <div class="heat-alert" id="heat-alert">
-  <div class="heat-alert-icon">🌡️</div>
+  <div class="heat-alert-icon">&#127777;&#65039;</div>
   <div class="heat-alert-body">
     <div class="heat-alert-title">PERINGATAN SUHU TINGGI</div>
     <div class="heat-alert-msg" id="heat-alert-msg">Suhu melebihi 30°C</div>
